@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will you be my Valentine?</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:linear-gradient(135deg,#ffeef8,#ffe0f0,#ffd4e5);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.container{
+  text-align:center;
+  position:relative;
+}
+
+h1{
+  font-size:2em;
+  color:#ff69b4;
+  margin-bottom:20px;
+  padding:0 20px;
+}
+
+.question{
+  font-size:1.1em;
+  color:#ff1493;
+  margin-bottom:40px;
+  padding:0 20px;
+}
+
+.buttons{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  align-items:center;
+  padding:0 20px;
+}
+
+button{
+  padding:14px 35px;
+  font-size:1em;
+  border:none;
+  border-radius:50px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:transform .2s ease;
+}
+
+@media (min-width:768px){
+  h1{font-size:3.5em;padding:0}
+  .question{font-size:1.4em;padding:0}
+  .buttons{gap:30px;padding:0}
+  button{padding:16px 45px;font-size:1.2em}
+}
+
+.yes{
+  background:#ff69b4;
+  color:#fff;
+}
+
+.yes:hover{
+  background:#ff1493;
+  transform:scale(1.1);
+}
+
+.no{
+  background:#ffb6c1;
+  color:#fff;
+  transition:left .15s ease-out, top .15s ease-out;
+}
+
+.no-placeholder{
+  width:fit-content;
+}
+
+.message{
+  display:none;
+  font-size:1.5em;
+  color:#ff1493;
+  margin-top:20px;
+  animation:bounce 1s infinite;
+  padding:0 20px;
+}
+
+.sticker{
+  display:none;
+  margin-top:20px;
+  max-width:300px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+@media (min-width:768px){
+  .sticker{max-width:400px}
+}
+
+.celebration{
+  display:none;
+  font-size:1em;
+  color:#ff69b4;
+  margin-top:10px;
+  padding:0 20px;
+}
+
+@media (min-width:768px){
+  .message{font-size:2em;padding:0}
+  .celebration{font-size:1.3em;padding:0}
+}
+
+.heart{
+  position:fixed;
+  font-size:24px;
+  animation:floatUp 3s ease-out;
+  pointer-events:none;
+}
+
+@keyframes floatUp{
+  from{transform:scale(0) translateY(0);opacity:1}
+  to{transform:scale(1) translateY(-180px);opacity:0}
+}
+
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Will you be my Valentine? 💖</h1>
+  <p class="question">I promise to make every day special! 🌹</p>
+
+  <div class="buttons">
+    <button class="yes" onclick="sayYes()">Yes! 💖</button>
+
+    <div class="no-placeholder">
+      <button class="no"
+        onmousemove="escapeFromCursor(event, this)"
+        ontouchstart="escapeFromTouch(event, this)">
+        No 😅
+      </button>
+    </div>
+  </div>
+
+
+  <div class="message" id="message">YAYYY 🥹💖</div>
+  <div class="sticker" id="sticker">
+    <div class="tenor-gif-embed" data-postid="26864954" data-share-method="host" data-aspect-ratio="1.23552" data-width="100%"></div>
+  </div>
+  <div class="celebration" id="celebration">
+    You just made me the happiest person ❤️
+  </div>
+</div>
+
+<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+
+<script>
+function sayYes(){
+  document.querySelector('.buttons').style.display='none';
+  document.querySelector('.question').style.display='none';
+  document.getElementById('message').style.display='block';
+  document.getElementById('sticker').style.display='block';
+  document.getElementById('celebration').style.display='block';
+
+  for(let i=0;i<25;i++){
+    setTimeout(createHeart,i*120);
+  }
+}
+
+function createHeart(){
+  const h=document.createElement('div');
+  h.className='heart';
+  h.innerHTML='💖';
+  h.style.left=Math.random()*100+'vw';
+  h.style.top=Math.random()*70+20+'vh';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),3000);
+}
+
+/* ---- Direction-aware escape ---- */
+function escapeFromCursor(e, btn){
+  moveAway(btn, e.clientX, e.clientY);
+}
+
+function escapeFromTouch(e, btn){
+  const touch=e.touches[0];
+  moveAway(btn, touch.clientX, touch.clientY);
+}
+
+function moveAway(btn, x, y){
+  if(btn.dataset.moved!=="true"){
+    btn.dataset.moved="true";
+    btn.style.position="fixed";
+  }
+
+  const rect=btn.getBoundingClientRect();
+  const centerX=rect.left+rect.width/2;
+  const centerY=rect.top+rect.height/2;
+
+  let dx=centerX-x;
+  let dy=centerY-y;
+
+  const length=Math.sqrt(dx*dx+dy*dy) || 1;
+  dx/=length;
+  dy/=length;
+
+  const distance=180;
+
+  let newX=centerX+dx*distance;
+  let newY=centerY+dy*distance;
+
+  const margin=250;
+  newX=Math.max(margin,Math.min(newX,window.innerWidth-rect.width-margin));
+  newY=Math.max(margin,Math.min(newY,window.innerHeight-rect.height-margin));
+
+  btn.style.left=newX+'px';
+  btn.style.top=newY+'px';
+}
+</script>
+
+</body>
+</html>
